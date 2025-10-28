@@ -1,0 +1,103 @@
+# .NET Core
+bin/
+obj/
+*.user
+*.suo
+*.tmp
+*.log
+*.vs/
+*.swp
+*.swo
+*~
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+*.nuspec
+
+# IDEs
+.vscode/
+.idea/
+*.sln.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build outputs
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.tmp_proj
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# TeamCity
+_TeamCity*
+
+# DotCover
+*.dotCover
+
+# NCrunch
+*.ncrunch*
+.*crunch*.local.xml
+
+# MightyMoose
+*.mm.*
+AutoTest.Net/
+
+# Web
+wwwroot/
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Database
+*.mdf
+*.ldf
+*.sdf
+
+# Windows
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.directory
+.Trash-*
