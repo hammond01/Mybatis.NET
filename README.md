@@ -15,13 +15,13 @@ A lightweight MyBatis port for .NET, providing XML-based SQL mapping, runtime pr
 Install via NuGet:
 
 ```bash
-dotnet add package MyBatis.NET.Common --version 1.2.1-alpha
+dotnet add package MyBatis.NET.SqlMapper --version 1.2.1-alpha
 ```
 
 Or using Package Manager:
 
 ```powershell
-Install-Package MyBatis.NET.Common -Version 1.2.1-alpha
+Install-Package MyBatis.NET.SqlMapper -Version 1.2.1-alpha
 ```
 
 ## Quick Start
