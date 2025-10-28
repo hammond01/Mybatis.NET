@@ -1,0 +1,145 @@
+# MyBatis.NET
+
+A lightweight MyBatis port for .NET, providing XML-based SQL mapping, runtime proxy generation, and transaction support.
+
+## Features
+
+- **XML Mappers**: Define SQL statements in XML files
+- **Runtime Proxy**: Automatically generate mapper implementations using dynamic proxies
+- **Transaction Support**: Built-in transaction management
+- **Result Mapping**: Automatic mapping of query results to .NET objects
+- **ADO.NET Integration**: Uses Microsoft.Data.SqlClient for database connectivity
+
+## Installation
+
+Install via NuGet:
+
+```bash
+dotnet add package MyBatis.NET --version 1.2.1-alpha
+```
+
+Or using Package Manager:
+
+```powershell
+Install-Package MyBatis.NET -Version 1.2.1-alpha
+```
+
+## Quick Start
+
+### 1. Define Your Entity
+
+```csharp
+public class User
+{
+    public int Id { get; set; }
+    public string UserName { get; set; } = "";
+    public string Email { get; set; } = "";
+}
+```
+
+### 2. Create Mapper Interface
+
+```csharp
+public interface IUserMapper
+{
+    List<User> GetAll();
+    User GetById(int id);
+    int InsertUser(User user);
+}
+```
+
+### 3. Create XML Mapper
+
+Create a file `UserMapper.xml` in the `Mappers` directory:
+
+```xml
+<mapper namespace="IUserMapper">
+  <select id="GetAll" resultType="User">
+    SELECT Id, UserName, Email FROM Users
+  </select>
+
+  <select id="GetById" parameterType="int" resultType="User">
+    SELECT Id, UserName, Email FROM Users WHERE Id = @Id
+  </select>
+
+  <insert id="InsertUser" parameterType="User">
+    INSERT INTO Users (UserName, Email) VALUES (@UserName, @Email)
+  </insert>
+</mapper>
+```
+
+### 4. Use in Your Code
+
+```csharp
+using MyBatis.NET.Mapper;
+using MyBatis.NET.Core;
+
+// Auto-load all XML mappers from Mappers directory
+MapperAutoLoader.AutoLoad();
+
+// Create session with connection string
+var connStr = "Server=your-server;Database=your-db;User Id=your-user;Password=your-password;";
+using var session = new SqlSession(connStr);
+
+// Get mapper instance
+var mapper = session.GetMapper<IUserMapper>();
+
+// Use mapper methods
+var users = mapper.GetAll();
+var user = mapper.GetById(1);
+var rowsAffected = mapper.InsertUser(new User { UserName = "John", Email = "john@example.com" });
+```
+
+## Transactions
+
+```csharp
+using var session = new SqlSession(connStr);
+session.BeginTransaction();
+
+try
+{
+    var mapper = session.GetMapper<IUserMapper>();
+    mapper.InsertUser(new User { UserName = "Jane", Email = "jane@example.com" });
+    session.Commit();
+}
+catch
+{
+    session.Rollback();
+    throw;
+}
+```
+
+## Configuration
+
+### Connection String
+
+MyBatis.NET uses standard ADO.NET connection strings. Ensure your database supports the operations defined in your mappers.
+
+### Mapper Files
+
+- Place XML mapper files in a `Mappers` directory
+- Use `MapperAutoLoader.AutoLoad()` to load all mappers automatically
+- Or load specific files using `XmlMapperLoader.LoadFromFile(path)`
+
+## Supported SQL Operations
+
+- `SELECT` (returns List<T> or single T)
+- `INSERT`, `UPDATE`, `DELETE` (returns affected row count)
+
+## Requirements
+
+- .NET 8.0 or later
+- Microsoft.Data.SqlClient (included as dependency)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues and pull requests.
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Author
+
+Hammond</content>
+<parameter name="filePath">f:\NET\MyBatis.NET\README.md
