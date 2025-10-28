@@ -1,5 +1,8 @@
 # MyBatis.NET
 
+[![NuGet Version](https://img.shields.io/nuget/v/MyBatis.NET.SqlMapper.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/MyBatis.NET.SqlMapper.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper/)
+
 A lightweight MyBatis port for .NET, providing XML-based SQL mapping, runtime proxy generation, and transaction support.
 
 ## Features
@@ -15,13 +18,13 @@ A lightweight MyBatis port for .NET, providing XML-based SQL mapping, runtime pr
 Install via NuGet:
 
 ```bash
-dotnet add package MyBatis.NET.SqlMapper --version 1.2.1-alpha
+dotnet add package MyBatis.NET.SqlMapper
 ```
 
 Or using Package Manager:
 
 ```powershell
-Install-Package MyBatis.NET.SqlMapper -Version 1.2.1-alpha
+Install-Package MyBatis.NET.SqlMapper
 ```
 
 ## Quick Start
@@ -141,5 +144,4 @@ MIT License - see LICENSE file for details.
 
 ## Author
 
-Hammond</content>
-<parameter name="filePath">f:\NET\MyBatis.NET\README.md
+Hammond

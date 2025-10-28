@@ -8,12 +8,12 @@
     <OutputType>Library</OutputType>
 
     <PackageId>MyBatis.NET.SqlMapper</PackageId>
-    <Version>1.2.0-alpha</Version>
+    <Version>1.0.0</Version>
     <Authors>Hammond</Authors>
     <Description>Lightweight MyBatis port for .NET. XML mappers, runtime proxy, and transaction support.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/hammonddev/MyBatis.NET</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/hammonddev/MyBatis.NET</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/hammond01/MyBatis.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hammond01/MyBatis.NET</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
