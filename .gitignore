@@ -9,7 +9,7 @@ obj/
 *.swp
 *.swo
 *~
-
+Demo/*
 # NuGet
 packages/
 *.nupkg

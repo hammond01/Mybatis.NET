@@ -1,7 +1,8 @@
 # MyBatis.NET
 
-[![NuGet Version](https://img.shields.io/nuget/v/MyBatis.NET.SqlMapper.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper/)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/MyBatis.NET.SqlMapper.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper/)
+[![NuGet Version](https://img.shields.io/nuget/v/MyBatis.NET.SqlMapper.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Build](https://img.shields.io/github/actions/workflow/status/hammond01/Mybatis.NET/dotnet.yml?label=build)]()
 
 A lightweight MyBatis port for .NET, providing XML-based SQL mapping, runtime proxy generation, and transaction support.
 
@@ -12,6 +13,8 @@ A lightweight MyBatis port for .NET, providing XML-based SQL mapping, runtime pr
 - **Transaction Support**: Built-in transaction management
 - **Result Mapping**: Automatic mapping of query results to .NET objects
 - **ADO.NET Integration**: Uses Microsoft.Data.SqlClient for database connectivity
+- **Async Support**: Full asynchronous operations for all database interactions
+- **DDD Support**: Load mappers from multiple libraries and embedded resources
 
 ## Installation
 
@@ -58,6 +61,8 @@ public interface IUserMapper
     List<User> GetAll();
     User GetById(int id);
     int InsertUser(User user);
+    int UpdateUser(int id, string userName, string email);
+    int DeleteUser(int id);
 }
 ```
 
@@ -78,6 +83,14 @@ Create a file `UserMapper.xml` in the `Mappers` directory:
   <insert id="InsertUser" parameterType="User">
     INSERT INTO Users (UserName, Email) VALUES (@UserName, @Email)
   </insert>
+
+  <update id="UpdateUser">
+    UPDATE Users SET UserName = @userName, Email = @email WHERE Id = @id
+  </update>
+
+  <delete id="DeleteUser" parameterType="int">
+    DELETE FROM Users WHERE Id = @Id
+  </delete>
 </mapper>
 ```
 
@@ -88,7 +101,7 @@ using MyBatis.NET.Mapper;
 using MyBatis.NET.Core;
 
 // Auto-load all XML mappers from Mappers directory
-MapperAutoLoader.AutoLoad();
+MapperAutoLoader.AutoLoad("Mappers");
 
 // Create session with connection string
 var connStr = "Server=your-server;Database=your-db;User Id=your-user;Password=your-password;";
@@ -101,6 +114,8 @@ var mapper = session.GetMapper<IUserMapper>();
 var users = mapper.GetAll();
 var user = mapper.GetById(1);
 var rowsAffected = mapper.InsertUser(new User { UserName = "John", Email = "john@example.com" });
+mapper.UpdateUser(1, "UpdatedName", "updated@example.com");
+mapper.DeleteUser(2);
 ```
 
 ## Custom Mapper Folders
@@ -120,6 +135,22 @@ To embed XML files as resources in your library:
 1. Add XML files to your project
 2. Set "Build Action" to "Embedded Resource" in file properties
 3. Use `AutoLoadFromAssemblies()` to load them
+
+## Async Operations
+
+All database operations support async execution:
+
+```csharp
+using var session = new SqlSession(connStr);
+var mapper = session.GetMapper<IUserMapper>();
+
+// Async operations
+var users = await mapper.GetAllAsync();
+var user = await mapper.GetByIdAsync(1);
+var rowsAffected = await mapper.InsertUserAsync(new User { UserName = "John", Email = "john@example.com" });
+await mapper.UpdateUserAsync(1, "UpdatedName", "updated@example.com");
+await mapper.DeleteUserAsync(2);
+```
 
 ## Transactions
 
@@ -154,8 +185,8 @@ MyBatis.NET uses standard ADO.NET connection strings. Ensure your database suppo
 
 ## Supported SQL Operations
 
-- `SELECT` (returns List<T> or single T)
-- `INSERT`, `UPDATE`, `DELETE` (returns affected row count)
+- `SELECT` (returns List<T> or single T, sync and async)
+- `INSERT`, `UPDATE`, `DELETE` (returns affected row count, sync and async)
 
 ## Requirements
 
@@ -169,6 +200,12 @@ Contributions are welcome! Please feel free to submit issues and pull requests.
 ## License
 
 MIT License - see LICENSE file for details.
+
+## Version 1.5.0
+
+- Cleaned package by removing demo files (User.cs, IUserMapper.cs, Program.cs, and Demo folder) from compilation.
+- Added full async support for all database operations.
+- Enhanced documentation with complete CRUD examples.
 
 ## Author
 

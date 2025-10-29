@@ -8,7 +8,7 @@
         <OutputType>Library</OutputType>
 
     <PackageId>MyBatis.NET.SqlMapper</PackageId>
-    <Version>1.4.0</Version>
+    <Version>1.5.0</Version>
     <Authors>Hammond</Authors>
     <Description>Lightweight MyBatis port for .NET. XML mappers, runtime proxy, transaction support, async operations, and multi-library DDD support.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -20,6 +20,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Program.cs" />
+    <Compile Remove="User.cs" />
+    <Compile Remove="IUserMapper.cs" />
+    <Compile Remove="Demo\**" />
   </ItemGroup>
 
   <ItemGroup>
