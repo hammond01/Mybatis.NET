@@ -1,8 +1,8 @@
 # MyBatis.NET
 
 [![NuGet Version](https://img.shields.io/nuget/v/MyBatis.NET.SqlMapper.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/MyBatis.NET.SqlMapper.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Build](https://img.shields.io/github/actions/workflow/status/hammond01/Mybatis.NET/dotnet.yml?label=build)]()
 
 A lightweight MyBatis port for .NET, providing XML-based SQL mapping, runtime proxy generation, and transaction support.
 
