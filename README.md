@@ -27,6 +27,16 @@ Or using Package Manager:
 Install-Package MyBatis.NET.SqlMapper
 ```
 
+## Demo Project
+
+Check out the [MyBatis.Demo](https://github.com/hammond01/MyBatis.Demo) repository for complete working examples including:
+
+- Basic CRUD operations
+- Custom mapper configurations
+- DDD architecture with multiple libraries
+- Async operations
+- Transaction management
+
 ## Quick Start
 
 ### 1. Define Your Entity
