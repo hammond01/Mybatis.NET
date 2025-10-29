@@ -5,12 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
 
     <PackageId>MyBatis.NET.SqlMapper</PackageId>
-    <Version>1.3.0</Version>
+    <Version>1.4.0</Version>
     <Authors>Hammond</Authors>
-    <Description>Lightweight MyBatis port for .NET. XML mappers, runtime proxy, and transaction support.</Description>
+    <Description>Lightweight MyBatis port for .NET. XML mappers, runtime proxy, transaction support, async operations, and multi-library DDD support.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hammond01/MyBatis.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/hammond01/MyBatis.NET</RepositoryUrl>

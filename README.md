@@ -93,6 +93,24 @@ var user = mapper.GetById(1);
 var rowsAffected = mapper.InsertUser(new User { UserName = "John", Email = "john@example.com" });
 ```
 
+## Custom Mapper Folders
+
+For projects with multiple libraries (e.g., DDD architecture), you can load mappers from multiple directories:
+
+```csharp
+// Load from multiple directories
+MapperAutoLoader.AutoLoad("Mappers", "../Domain/Mappers", "../Infrastructure/Mappers");
+
+// Or load from embedded resources in assemblies (useful for library projects)
+MapperAutoLoader.AutoLoadFromAssemblies(typeof(MyClass).Assembly, typeof(OtherClass).Assembly);
+```
+
+To embed XML files as resources in your library:
+
+1. Add XML files to your project
+2. Set "Build Action" to "Embedded Resource" in file properties
+3. Use `AutoLoadFromAssemblies()` to load them
+
 ## Transactions
 
 ```csharp
