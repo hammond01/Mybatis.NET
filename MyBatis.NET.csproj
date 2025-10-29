@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <OutputType>Exe</OutputType>
+        <OutputType>Library</OutputType>
 
     <PackageId>MyBatis.NET.SqlMapper</PackageId>
     <Version>1.4.0</Version>

@@ -10,4 +10,12 @@
   <insert id="InsertUser" parameterType="User">
     INSERT INTO Users (UserName, Email) VALUES (@UserName, @Email)
   </insert>
+
+  <delete id="DeleteUser" parameterType="int">
+    DELETE FROM Users WHERE Id = @Id
+  </delete>
+
+  <update id="UpdateUser">
+    UPDATE Users SET UserName = @userName, Email = @email WHERE Id = @id
+  </update>
 </mapper>
