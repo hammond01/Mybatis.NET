@@ -1,0 +1,36 @@
+using System;
+using System.Collections.Generic;
+
+namespace MyBatis.ConsoleTest.Mappers;
+
+/// <summary>
+/// Auto-generated from UserMapper.xml
+/// Generated at: 2025-11-05 15:37:04
+/// </summary>
+public interface IUserMapper
+{
+    List<User> GetAll();
+
+    User? GetById(int id);
+
+    List<User> SearchUsers(string? userName, string? role, int? minAge, int? maxAge, bool? isActive);
+
+    List<User> FindByRoles(List<string> roles);
+
+    List<User> FindByIds(List<string> ids);
+
+    int InsertUser(User user);
+
+    int UpdateUser(string? UserName, string? Email, int? Age, string? Role, bool? IsActive);
+
+    int DeleteUser(int id);
+
+    int SoftDeleteUser(int id);
+
+    List<User> SearchByType(string? searchValue);
+
+    List<User> ComplexSearch(List<string> Roles, string? UserName, string? Email, int? MinAge, int? MaxAge, bool? IsActive, string? CreatedAfter);
+
+    int? CountUsers(string? role, bool? isActive);
+
+}

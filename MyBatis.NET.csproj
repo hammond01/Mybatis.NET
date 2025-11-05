@@ -6,15 +6,19 @@
     <Nullable>enable</Nullable>
 
         <OutputType>Library</OutputType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 
     <PackageId>MyBatis.NET.SqlMapper</PackageId>
-    <Version>1.5.0</Version>
+    <Version>2.0.0</Version>
     <Authors>Hammond</Authors>
-    <Description>Lightweight MyBatis port for .NET. XML mappers, runtime proxy, transaction support, async operations, and multi-library DDD support.</Description>
+    <Description>Lightweight MyBatis port for .NET with code generation tool. XML mappers with mandatory returnSingle attribute, dynamic SQL (&lt;if&gt;, &lt;where&gt;, &lt;foreach&gt;, &lt;choose&gt;, etc.), auto-generate C# interfaces from XML, SQL logging, runtime proxy, transaction support, async operations, and multi-library DDD support.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hammond01/MyBatis.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/hammond01/MyBatis.NET</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>mybatis;orm;sql-mapper;dynamic-sql;xml-mapper;code-generator;database;ado-net;mapper-proxy;sql-logging</PackageTags>
+    <PackageReleaseNotes>Version 2.0.0 - BREAKING CHANGE: returnSingle attribute now required for all &lt;select&gt; statements. New: Code generator tool, SQL logging, comprehensive documentation.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -27,6 +31,17 @@
     <Compile Remove="User.cs" />
     <Compile Remove="IUserMapper.cs" />
     <Compile Remove="Demo\**" />
+    <Compile Remove="Tests\**" />
+    <Compile Remove="Examples\**" />
+    <Compile Remove="MyBatis.ConsoleTest\**" />
+    <Compile Remove="Tools\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Tests\**" />
+    <None Remove="Examples\**" />
+    <None Remove="MyBatis.ConsoleTest\**" />
+    <None Remove="Tools\**" />
   </ItemGroup>
 
   <ItemGroup>

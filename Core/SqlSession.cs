@@ -33,9 +33,13 @@ public class SqlSession : IDisposable
         try
         {
             var stmt = MapperRegistry.Get(id);
-            using var cmd = new SqlCommand(stmt.Sql, (SqlConnection)_conn, (SqlTransaction?)_tran);
+            var convertedParams = ConvertParameters(parameters);
+            var sql = stmt.BuildSql(convertedParams, out var modifiedParams);
+            SqlSessionConfiguration.LogSql(sql, modifiedParams);
+            using var cmd = new SqlCommand(sql, (SqlConnection)_conn, (SqlTransaction?)_tran);
             cmd.CommandTimeout = _commandTimeout;
-            AddParams(cmd, parameters);
+            // Use modifiedParams instead of original parameters for ForEach expansion
+            AddParams(cmd, modifiedParams);
             using var reader = cmd.ExecuteReader();
             return ResultMapper.MapToList<T>(reader);
         }
@@ -54,9 +58,12 @@ public class SqlSession : IDisposable
         try
         {
             var stmt = MapperRegistry.Get(id);
-            using var cmd = new SqlCommand(stmt.Sql, (SqlConnection)_conn, (SqlTransaction?)_tran);
+            var convertedParams = ConvertParameters(parameters);
+            var sql = stmt.BuildSql(convertedParams, out var modifiedParams);
+            SqlSessionConfiguration.LogSql(sql, modifiedParams);
+            using var cmd = new SqlCommand(sql, (SqlConnection)_conn, (SqlTransaction?)_tran);
             cmd.CommandTimeout = _commandTimeout;
-            AddParams(cmd, parameters);
+            AddParams(cmd, modifiedParams);
             return cmd.ExecuteNonQuery();
         }
         catch (Exception ex)
@@ -65,24 +72,69 @@ public class SqlSession : IDisposable
         }
     }
 
-    private static void AddParams(SqlCommand cmd, Dictionary<string, object>? parameters)
+    private static Dictionary<string, object?> ConvertParameters(Dictionary<string, object>? parameters)
+    {
+        if (parameters == null)
+            return new Dictionary<string, object?>();
+
+        var result = new Dictionary<string, object?>();
+
+        foreach (var kvp in parameters)
+        {
+            // If value is a complex object (not primitive, string, or collection), extract its properties
+            if (kvp.Value != null &&
+                kvp.Value.GetType().IsClass &&
+                kvp.Value.GetType() != typeof(string) &&
+                !(kvp.Value is System.Collections.IEnumerable))
+            {
+                // Extract all properties from the object
+                var props = kvp.Value.GetType().GetProperties();
+                foreach (var prop in props)
+                {
+                    result[prop.Name] = prop.GetValue(kvp.Value);
+                }
+            }
+            else
+            {
+                result[kvp.Key] = kvp.Value;
+            }
+        }
+
+        return result;
+    }
+
+    private static void AddParams(SqlCommand cmd, Dictionary<string, object?>? parameters)
     {
         if (parameters == null) return;
+
+        var sql = cmd.CommandText;
+
         foreach (var p in parameters)
         {
-            if (p.Value is not null && p.Value.GetType().IsClass && p.Value.GetType() != typeof(string))
+            if (p.Value is not null && p.Value.GetType().IsClass && p.Value.GetType() != typeof(string)
+                && !(p.Value is System.Collections.IEnumerable))
             {
                 // If parameter is an object, extract its properties
                 var props = p.Value.GetType().GetProperties();
                 foreach (var prop in props)
                 {
-                    var value = prop.GetValue(p.Value) ?? DBNull.Value;
-                    cmd.Parameters.AddWithValue($"@{prop.Name}", value);
+                    var paramName = $"@{prop.Name}";
+                    // Only add parameter if it's referenced in the SQL
+                    if (sql.Contains(paramName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var value = prop.GetValue(p.Value) ?? DBNull.Value;
+                        cmd.Parameters.AddWithValue(paramName, value);
+                    }
                 }
             }
             else
             {
-                cmd.Parameters.AddWithValue($"@{p.Key}", p.Value ?? DBNull.Value);
+                var paramName = $"@{p.Key}";
+                // Only add parameter if it's referenced in the SQL
+                if (sql.Contains(paramName, StringComparison.OrdinalIgnoreCase))
+                {
+                    cmd.Parameters.AddWithValue(paramName, p.Value ?? DBNull.Value);
+                }
             }
         }
     }
@@ -93,9 +145,12 @@ public class SqlSession : IDisposable
         try
         {
             var stmt = MapperRegistry.Get(id);
-            await using var cmd = new SqlCommand(stmt.Sql, (SqlConnection)_conn, (SqlTransaction?)_tran);
+            var convertedParams = ConvertParameters(parameters);
+            var sql = stmt.BuildSql(convertedParams, out var modifiedParams);
+            SqlSessionConfiguration.LogSql(sql, modifiedParams);
+            await using var cmd = new SqlCommand(sql, (SqlConnection)_conn, (SqlTransaction?)_tran);
             cmd.CommandTimeout = _commandTimeout;
-            AddParams(cmd, parameters);
+            AddParams(cmd, modifiedParams);
             await using var reader = await cmd.ExecuteReaderAsync();
             return ResultMapper.MapToList<T>(reader);
         }
@@ -114,9 +169,12 @@ public class SqlSession : IDisposable
         try
         {
             var stmt = MapperRegistry.Get(id);
-            await using var cmd = new SqlCommand(stmt.Sql, (SqlConnection)_conn, (SqlTransaction?)_tran);
+            var convertedParams = ConvertParameters(parameters);
+            var sql = stmt.BuildSql(convertedParams, out var modifiedParams);
+            SqlSessionConfiguration.LogSql(sql, modifiedParams);
+            await using var cmd = new SqlCommand(sql, (SqlConnection)_conn, (SqlTransaction?)_tran);
             cmd.CommandTimeout = _commandTimeout;
-            AddParams(cmd, parameters);
+            AddParams(cmd, modifiedParams);
             return await cmd.ExecuteNonQueryAsync();
         }
         catch (Exception ex)

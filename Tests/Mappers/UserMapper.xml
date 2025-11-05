@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mapper namespace="IUserMapper">
+
+  <!-- Basic CRUD Operations -->
+  <select id="GetAll" resultType="User" returnSingle="false">
+    SELECT Id, UserName, Email, Age, Role, IsActive, CreatedDate, DeletedDate
+    FROM Users
+    ORDER BY CreatedDate DESC
+  </select>
+
+  <select id="GetById" resultType="User" returnSingle="true">
+    SELECT Id, UserName, Email, Age, Role, IsActive, CreatedDate, DeletedDate
+    FROM Users
+    WHERE Id = @id
+  </select>
+
+  <insert id="Insert">
+    INSERT INTO Users (UserName, Email, Age, Role, IsActive)
+    VALUES (@UserName, @Email, @Age, @Role, @IsActive)
+  </insert>
+
+  <delete id="Delete">
+    DELETE FROM Users WHERE Id = @id
+  </delete>
+
+  <!-- Test 1: Simple IF conditions -->
+  <select id="FindByNameOrEmail" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <if test="name != null">
+        AND UserName LIKE '%' + @name + '%'
+      </if>
+      <if test="email != null">
+        AND Email LIKE '%' + @email + '%'
+      </if>
+    </where>
+  </select>
+
+  <!-- Test 2: IF with numeric comparisons -->
+  <select id="FindByAgeRange" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <if test="minAge > 0">
+        AND Age >= @minAge
+      </if>
+      <if test="maxAge > 0">
+        AND Age &lt;= @maxAge
+      </if>
+    </where>
+    ORDER BY Age
+  </select>
+
+  <!-- Test 3: Multiple IF conditions -->
+  <select id="FindByMultipleConditions" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <if test="name != null">
+        AND UserName = @name
+      </if>
+      <if test="email != null">
+        AND Email = @email
+      </if>
+      <if test="age > 0">
+        AND Age = @age
+      </if>
+      <if test="role != null">
+        AND Role = @role
+      </if>
+    </where>
+  </select>
+
+  <!-- Test 4: WHERE with dynamic conditions -->
+  <select id="SearchUsers" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <if test="name != null">
+        UserName LIKE '%' + @name + '%'
+      </if>
+      <if test="email != null">
+        AND Email LIKE '%' + @email + '%'
+      </if>
+      <if test="isActive != null">
+        AND IsActive = @isActive
+      </if>
+    </where>
+    ORDER BY UserName
+  </select>
+
+  <!-- Test 5: CHOOSE/WHEN/OTHERWISE -->
+  <select id="FindByRole" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <choose>
+        <when test="roleType == 'admin'">
+          Role = 'Admin'
+        </when>
+        <when test="roleType == 'manager'">
+          Role = 'Manager'
+        </when>
+        <when test="roleType == 'user'">
+          Role = 'User'
+        </when>
+        <otherwise>
+          Role IN ('User', 'Guest')
+        </otherwise>
+      </choose>
+    </where>
+    ORDER BY UserName
+  </select>
+
+  <!-- Test 6: CHOOSE with multiple conditions -->
+  <select id="FindByStatus" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <choose>
+        <when test="status == 'active'">
+          IsActive = 1 AND DeletedDate IS NULL
+        </when>
+        <when test="status == 'inactive'">
+          IsActive = 0 AND DeletedDate IS NULL
+        </when>
+        <when test="status == 'deleted'">
+          DeletedDate IS NOT NULL
+        </when>
+        <otherwise>
+          1 = 1
+        </otherwise>
+      </choose>
+    </where>
+    ORDER BY CreatedDate DESC
+  </select>
+
+  <!-- Test 7: SET for dynamic UPDATE -->
+  <update id="UpdateUser">
+    UPDATE Users
+    <set>
+      <if test="userName != null">
+        UserName = @userName,
+      </if>
+      <if test="email != null">
+        Email = @email,
+      </if>
+      <if test="age > 0">
+        Age = @age,
+      </if>
+      <if test="role != null">
+        Role = @role,
+      </if>
+    </set>
+    WHERE Id = @id
+  </update>
+
+  <!-- Test 8: SET with object parameter -->
+  <update id="UpdateUserSelective">
+    UPDATE Users
+    <set>
+      <if test="UserName != null">
+        UserName = @UserName,
+      </if>
+      <if test="Email != null">
+        Email = @Email,
+      </if>
+      <if test="Age != null">
+        Age = @Age,
+      </if>
+      <if test="Role != null">
+        Role = @Role,
+      </if>
+    </set>
+    WHERE Id = @Id
+  </update>
+
+  <!-- Test 9: FOREACH with IN clause -->
+  <select id="FindByIds" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    WHERE Id IN
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      @id
+    </foreach>
+    ORDER BY Id
+  </select>
+
+  <!-- Test 10: FOREACH with strings -->
+  <select id="FindByRoles" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    WHERE Role IN
+    <foreach collection="roles" item="role" separator="," open="(" close=")">
+      @role
+    </foreach>
+    ORDER BY Role, UserName
+  </select>
+
+  <!-- Test 11: Complex nested dynamic SQL -->
+  <select id="ComplexSearch" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <!-- Basic filters -->
+      <if test="UserName != null">
+        AND UserName LIKE '%' + @UserName + '%'
+      </if>
+      <if test="Email != null">
+        AND Email LIKE '%' + @Email + '%'
+      </if>
+
+      <!-- Status filter with CHOOSE -->
+      <choose>
+        <when test="SearchType == 'name'">
+          AND UserName LIKE '%' + @SearchValue + '%'
+        </when>
+        <when test="SearchType == 'email'">
+          AND Email LIKE '%' + @SearchValue + '%'
+        </when>
+      </choose>
+
+      <!-- Age range -->
+      <if test="MinAge > 0">
+        AND Age >= @MinAge
+      </if>
+      <if test="MaxAge > 0">
+        AND Age &lt;= @MaxAge
+      </if>
+
+      <!-- Multiple roles with FOREACH -->
+      <if test="Roles != null">
+        AND Role IN
+        <foreach collection="Roles" item="role" separator="," open="(" close=")">
+          @role
+        </foreach>
+      </if>
+
+      <!-- Active status -->
+      <if test="IsActive != null">
+        AND IsActive = @IsActive
+      </if>
+    </where>
+    ORDER BY CreatedDate DESC
+  </select>
+
+  <!-- Test 12: TRIM with custom prefix/suffix -->
+  <select id="SearchWithTrim" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="name != null">
+        AND UserName LIKE '%' + @name + '%'
+      </if>
+      <if test="email != null">
+        OR Email LIKE '%' + @email + '%'
+      </if>
+    </trim>
+  </select>
+
+</mapper>

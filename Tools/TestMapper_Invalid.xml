@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mapper namespace="ITestMapper">
+  
+  <!-- Missing returnSingle attribute - should throw error -->
+  <select id="GetUsers" resultType="User">
+    SELECT * FROM Users
+  </select>
+
+</mapper>

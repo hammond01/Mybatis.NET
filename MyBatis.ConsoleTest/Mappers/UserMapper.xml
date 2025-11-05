@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mapper namespace="IUserMapper">
+  
+  <!-- Simple SELECT -->
+  <select id="GetAll" resultType="User" returnSingle="false">
+    SELECT Id, UserName, Email, Age, Role, IsActive, CreatedDate, DeletedDate 
+    FROM Users
+    ORDER BY UserName
+  </select>
+
+  <!-- SELECT with parameter -->
+  <select id="GetById" parameterType="int" resultType="User" returnSingle="true">
+    SELECT Id, UserName, Email, Age, Role, IsActive, CreatedDate, DeletedDate 
+    FROM Users 
+    WHERE Id = @id
+  </select>
+
+  <!-- Dynamic SQL with IF -->
+  <select id="SearchUsers" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <if test="userName != null">
+        UserName LIKE '%' + @userName + '%'
+      </if>
+      <if test="role != null">
+        AND Role = @role
+      </if>
+      <if test="minAge != null">
+        AND Age >= @minAge
+      </if>
+      <if test="maxAge != null">
+        AND Age &lt;= @maxAge
+      </if>
+      <if test="isActive != null">
+        AND IsActive = @isActive
+      </if>
+    </where>
+    ORDER BY UserName
+  </select>
+
+  <!-- FOREACH with collection -->
+  <select id="FindByRoles" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    WHERE Role IN
+    <foreach collection="roles" item="role" open="(" separator="," close=")">
+      @role
+    </foreach>
+    ORDER BY Role, UserName
+  </select>
+
+  <!-- FOREACH with IDs -->
+  <select id="FindByIds" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    WHERE Id IN
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+      @id
+    </foreach>
+    ORDER BY Id
+  </select>
+
+  <!-- INSERT -->
+  <insert id="InsertUser" parameterType="User">
+    INSERT INTO Users (UserName, Email, Age, Role, IsActive, CreatedDate)
+    VALUES (@UserName, @Email, @Age, @Role, @IsActive, GETDATE())
+  </insert>
+
+  <!-- UPDATE with SET dynamic SQL -->
+  <update id="UpdateUser">
+    UPDATE Users
+    <set>
+      <if test="UserName != null">
+        UserName = @UserName,
+      </if>
+      <if test="Email != null">
+        Email = @Email,
+      </if>
+      <if test="Age != null">
+        Age = @Age,
+      </if>
+      <if test="Role != null">
+        Role = @Role,
+      </if>
+      <if test="IsActive != null">
+        IsActive = @IsActive,
+      </if>
+    </set>
+    WHERE Id = @Id
+  </update>
+
+  <!-- DELETE -->
+  <delete id="DeleteUser" parameterType="int">
+    DELETE FROM Users WHERE Id = @id
+  </delete>
+
+  <!-- Soft DELETE -->
+  <update id="SoftDeleteUser" parameterType="int">
+    UPDATE Users 
+    SET DeletedDate = GETDATE(), IsActive = 0
+    WHERE Id = @id
+  </update>
+
+  <!-- CHOOSE/WHEN/OTHERWISE -->
+  <select id="SearchByType" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <choose>
+        <when test="searchType == 'name'">
+          UserName LIKE '%' + @searchValue + '%'
+        </when>
+        <when test="searchType == 'email'">
+          Email LIKE '%' + @searchValue + '%'
+        </when>
+        <when test="searchType == 'role'">
+          Role = @searchValue
+        </when>
+        <otherwise>
+          Id = @searchValue
+        </otherwise>
+      </choose>
+    </where>
+    ORDER BY UserName
+  </select>
+
+  <!-- Complex Dynamic SQL -->
+  <select id="ComplexSearch" resultType="User" returnSingle="false">
+    SELECT * FROM Users
+    <where>
+      <if test="UserName != null and UserName != ''">
+        UserName LIKE '%' + @UserName + '%'
+      </if>
+      <if test="Email != null and Email != ''">
+        AND Email LIKE '%' + @Email + '%'
+      </if>
+      <if test="Roles != null">
+        AND Role IN
+        <foreach collection="Roles" item="role" open="(" separator="," close=")">
+          @role
+        </foreach>
+      </if>
+      <if test="MinAge != null">
+        AND Age >= @MinAge
+      </if>
+      <if test="MaxAge != null">
+        AND Age &lt;= @MaxAge
+      </if>
+      <if test="IsActive != null">
+        AND IsActive = @IsActive
+      </if>
+      <if test="CreatedAfter != null">
+        AND CreatedDate >= @CreatedAfter
+      </if>
+    </where>
+    ORDER BY 
+    <choose>
+      <when test="OrderBy == 'name'">
+        UserName
+      </when>
+      <when test="OrderBy == 'email'">
+        Email
+      </when>
+      <when test="OrderBy == 'age'">
+        Age DESC
+      </when>
+      <otherwise>
+        CreatedDate DESC
+      </otherwise>
+    </choose>
+  </select>
+
+  <!-- Count with dynamic WHERE - Returns single int, not a User object -->
+  <select id="CountUsers" resultType="int" returnSingle="true">
+    SELECT COUNT(*) FROM Users
+    <where>
+      <if test="role != null">
+        Role = @role
+      </if>
+      <if test="isActive != null">
+        AND IsActive = @isActive
+      </if>
+    </where>
+  </select>
+
+</mapper>

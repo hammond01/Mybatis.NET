@@ -30,7 +30,7 @@ public class MapperProxy<T> : DispatchProxy where T : class
         var dict = new Dictionary<string, object>();
         if (args != null)
             for (int i = 0; i < args.Length; i++)
-                dict[paramNames[i]] = args[i] ?? DBNull.Value;
+                dict[paramNames[i]] = args[i]!; // Keep null as null for dynamic SQL evaluation
 
         // Tự động chọn Select/Execute
         if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(List<>))
