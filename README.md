@@ -45,6 +45,7 @@ Install-Package MyBatis.NET.SqlMapper
 A complete working demo is included in this repository at **[Demo/MyBatis.TestApp](Demo/MyBatis.TestApp/)**!
 
 **Features demonstrated:**
+
 - ✅ **Dynamic SQL** - Full showcase of `<if>`, `<where>`, `<foreach>`, `<choose>`, `<set>`, and nested conditions
 - ✅ **Code Generator Tool** - How to use `mybatis-gen` to auto-generate interfaces
 - ✅ **returnSingle attribute** - Proper usage in v2.0.0
@@ -56,6 +57,7 @@ A complete working demo is included in this repository at **[Demo/MyBatis.TestAp
 - ✅ **Transaction Management** - Unit of Work pattern
 
 **Quick start:**
+
 ```bash
 cd Demo/MyBatis.TestApp
 dotnet restore
