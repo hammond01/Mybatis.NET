@@ -40,15 +40,30 @@ Or using Package Manager:
 Install-Package MyBatis.NET.SqlMapper
 ```
 
-## Demo Project
+## 📖 Demo Project
 
-Check out the [MyBatis.Demo](https://github.com/hammond01/MyBatis.Demo) repository for complete working examples including:
+A complete working demo is included in this repository at **[Demo/MyBatis.TestApp](Demo/MyBatis.TestApp/)**!
 
-- Basic CRUD operations
-- Custom mapper configurations
-- DDD architecture with multiple libraries
-- Async operations
-- Transaction management
+**Features demonstrated:**
+- ✅ **Dynamic SQL** - Full showcase of `<if>`, `<where>`, `<foreach>`, `<choose>`, `<set>`, and nested conditions
+- ✅ **Code Generator Tool** - How to use `mybatis-gen` to auto-generate interfaces
+- ✅ **returnSingle attribute** - Proper usage in v2.0.0
+- ✅ **Basic CRUD** - Users table with simple operations
+- ✅ **Complex Queries** - Products table with multi-filter search, category filtering, and dynamic updates
+- ✅ **DDD Architecture** - Domain, Application, Infrastructure, and Presentation layers
+- ✅ **ASP.NET Core Web API** - RESTful endpoints with Swagger UI
+- ✅ **Async/Await** - Full async support
+- ✅ **Transaction Management** - Unit of Work pattern
+
+**Quick start:**
+```bash
+cd Demo/MyBatis.TestApp
+dotnet restore
+dotnet run --project Presentation
+# Open https://localhost:5001/swagger
+```
+
+See **[Demo/MyBatis.TestApp/README.md](Demo/MyBatis.TestApp/README.md)** for detailed setup and API documentation.
 
 ## Quick Start
 
