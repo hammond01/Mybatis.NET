@@ -82,11 +82,11 @@ Create a file `UserMapper.xml` in the `Mappers` directory:
 
 ```xml
 <mapper namespace="IUserMapper">
-  <select id="GetAll" resultType="User">
+  <select id="GetAll" resultType="User" returnSingle="false">
     SELECT Id, UserName, Email FROM Users
   </select>
 
-  <select id="GetById" parameterType="int" resultType="User">
+  <select id="GetById" parameterType="int" resultType="User" returnSingle="true">
     SELECT Id, UserName, Email FROM Users WHERE Id = @Id
   </select>
 
@@ -103,6 +103,11 @@ Create a file `UserMapper.xml` in the `Mappers` directory:
   </delete>
 </mapper>
 ```
+
+> **⚠️ Important (v2.0.0+)**: All `<select>` statements **must** have `returnSingle` attribute:
+>
+> - `returnSingle="true"` for single object queries (returns `T?`)
+> - `returnSingle="false"` for collection queries (returns `List<T>`)
 
 ### 4. Use in Your Code
 
@@ -127,6 +132,54 @@ var rowsAffected = mapper.InsertUser(new User { UserName = "John", Email = "john
 mapper.UpdateUser(1, "UpdatedName", "updated@example.com");
 mapper.DeleteUser(2);
 ```
+
+## Code Generator Tool
+
+MyBatis.NET provides a **code generator tool** to auto-generate C# interfaces from XML mappers, keeping them in perfect sync!
+
+### Installation
+
+Install the tool globally:
+
+```bash
+dotnet tool install -g MyBatis.NET.SqlMapper.Tool
+```
+
+Or locally for your project:
+
+```bash
+dotnet new tool-manifest  # if not already exists
+dotnet tool install MyBatis.NET.SqlMapper.Tool
+```
+
+### Usage
+
+Generate interface from a single XML file:
+
+```bash
+mybatis-gen generate Mappers/UserMapper.xml
+```
+
+Generate all interfaces in a directory:
+
+```bash
+mybatis-gen generate-all Mappers
+```
+
+With custom namespace:
+
+```bash
+mybatis-gen generate Mappers/UserMapper.xml MyApp.Data.Mappers
+```
+
+**Features:**
+
+- ✅ Auto-detects parameters from SQL (`@paramName`) and dynamic tags
+- ✅ Smart type inference (`id` → `int`, `name` → `string?`, etc.)
+- ✅ Correct return types based on `returnSingle` attribute
+- ✅ Handles `<foreach>` collections automatically
+
+See **[Tools/README.md](Tools/README.md)** for complete documentation.
 
 ## Custom Mapper Folders
 

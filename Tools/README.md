@@ -1,55 +1,95 @@
 # MyBatis.NET Mapper Interface Generator
 
-**Tự động generate Interface từ XML Mapper** - Đảm bảo Interface và XML luôn đồng bộ!
+[![NuGet Version](https://img.shields.io/nuget/v/MyBatis.NET.SqlMapper.Tool.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper.Tool)
 
-## 🎯 Vấn đề giải quyết
+**Auto-generate C# interfaces from XML mappers** - Keep your interface and XML in perfect sync!
 
-Khi viết MyBatis mapper, bạn phải maintain 2 files:
+## 🎯 Problem Solved
+
+When writing MyBatis mappers, you have to maintain 2 files:
 
 1. **UserMapper.xml** - Define SQL statements
 2. **IUserMapper.cs** - Define interface methods
 
-❌ **Vấn đề**: Dễ bị sai lệch (mismatch) giữa XML và Interface:
+❌ **Problem**: Easy to get out of sync:
 
-- Thêm method trong XML nhưng quên update Interface
-- Đổi tên method/parameter trong XML nhưng không update Interface
-- Parameter type không khớp
+- Add method in XML but forget to update interface
+- Rename method/parameter in XML but not in interface
+- Parameter types don't match
 
-✅ **Giải pháp**: Tool này tự động generate Interface từ XML!
+✅ **Solution**: This tool auto-generates interfaces from XML!
 
-## 🚀 Cách sử dụng
+## � Installation
 
-### 1. Generate từ một file XML
+### Global Installation (Recommended)
+
+Install the tool globally to use it anywhere:
 
 ```bash
-cd Tools
-dotnet run generate <xml-file-path> [output-path] [namespace]
+dotnet tool install -g MyBatis.NET.SqlMapper.Tool
 ```
 
-**Example:**
+After installation, the `mybatis-gen` command will be available globally.
+
+### Local Installation (Per Project)
+
+Install the tool for a specific project:
 
 ```bash
-dotnet run generate ../MyBatis.ConsoleTest/Mappers/UserMapper.xml
+# Create tool manifest if not exists
+dotnet new tool-manifest
+
+# Install the tool
+dotnet tool install MyBatis.NET.SqlMapper.Tool
+
+# Restore tools
+dotnet tool restore
 ```
 
-Output: `../MyBatis.ConsoleTest/Mappers/IUserMapper.cs`
+Use with `dotnet tool run mybatis-gen` or `dotnet mybatis-gen`.
 
-### 2. Generate tất cả XML trong folder
+### Update Tool
 
 ```bash
-dotnet run generate-all [directory] [namespace]
+# Global update
+dotnet tool update -g MyBatis.NET.SqlMapper.Tool
+
+# Local update
+dotnet tool update MyBatis.NET.SqlMapper.Tool
 ```
 
-**Example:**
+## 🚀 Usage
+
+### 1. Generate from a Single XML File
 
 ```bash
-dotnet run generate-all ../MyBatis.ConsoleTest/Mappers
+mybatis-gen generate Mappers/UserMapper.xml
 ```
 
-### 3. Custom namespace và output path
+Output: `Mappers/IUserMapper.cs`
+
+With custom output path and namespace:
 
 ```bash
-dotnet run generate Mappers/UserMapper.xml Mappers/IUserMapper.cs MyApp.Data.Mappers
+mybatis-gen generate Mappers/UserMapper.xml Generated/IUserMapper.cs MyApp.Data.Mappers
+```
+
+### 2. Generate All XML Files in a Directory
+
+```bash
+mybatis-gen generate-all Mappers
+```
+
+With custom namespace:
+
+```bash
+mybatis-gen generate-all Mappers MyApp.Data.Mappers
+```
+
+### 3. Show Help
+
+```bash
+mybatis-gen help
 ```
 
 ## 📝 Input Example (UserMapper.xml)
@@ -121,56 +161,68 @@ public interface IUserMapper
 }
 ```
 
-## 🤖 Tính năng thông minh
+## 🤖 Smart Features
 
 ### 1. **Auto-detect Parameters**
 
-Tool tự động phân tích:
+The tool automatically analyzes:
 
-- `@paramName` trong SQL
+- `@paramName` in SQL statements
 - `<if test="...">` conditions
 - `<foreach collection="...">` collections
 - `parameterType` attribute
 
 ### 2. **Type Inference**
 
-Tool đoán type dựa trên tên parameter:
+Smart type guessing based on parameter names:
 
-- `id` → `int`
-- `userName`, `email`, `role` → `string?`
-- `age`, `count` → `int?`
-- `date`, `time` → `DateTime?`
-- `isActive`, `enabled` → `bool?`
+- `id`, `count`, `age` → `int?`
+- `userName`, `email`, `role`, `name` → `string?`
+- `date`, `time`, `createdDate` → `DateTime?`
+- `isActive`, `enabled`, `isDeleted` → `bool?`
+- `price`, `amount` → `decimal?`
 
 ### 3. **Return Type Detection**
 
-- `<select>` → `List<T>` (T từ `resultType`)
-- `<insert>`, `<update>`, `<delete>` → `int`
+Based on `returnSingle` attribute (v2.0.0+):
+
+- `<select returnSingle="false">` → `List<T>` (T from `resultType`)
+- `<select returnSingle="true">` → `T?` (nullable single object)
+- `<insert>`, `<update>`, `<delete>` → `int` (rows affected)
 
 ### 4. **Smart Naming**
 
 - `UserMapper.xml` → `IUserMapper.cs`
 - `ProductMapper.xml` → `IProductMapper.cs`
-- Auto-prefix "I" nếu chưa có
+- Auto-prefix "I" if not present
 
 ## 📋 Command Reference
 
-| Command                   | Description               | Example                                 |
-| ------------------------- | ------------------------- | --------------------------------------- |
-| `generate`, `gen`         | Generate from single XML  | `dotnet run gen Mappers/UserMapper.xml` |
-| `generate-all`, `gen-all` | Generate all in directory | `dotnet run gen-all Mappers`            |
-| `help`, `-h`, `--help`    | Show help                 | `dotnet run help`                       |
+| Command                   | Description               | Example                                  |
+| ------------------------- | ------------------------- | ---------------------------------------- |
+| `generate`, `gen`         | Generate from single XML  | `mybatis-gen gen Mappers/UserMapper.xml` |
+| `generate-all`, `gen-all` | Generate all in directory | `mybatis-gen gen-all Mappers`            |
+| `help`, `-h`, `--help`    | Show help                 | `mybatis-gen help`                       |
 
 ## 🔧 Advanced Usage
 
 ### 1. CI/CD Integration
 
-Add to your build script:
+Add to your build script (e.g., `.github/workflows/build.yml`):
+
+```yaml
+- name: Generate Mapper Interfaces
+  run: |
+    dotnet tool restore
+    dotnet mybatis-gen generate-all Mappers MyApp.Data.Mappers
+```
+
+Or in a shell script:
 
 ```bash
 # Generate all interfaces before build
-cd Tools
-dotnet run generate-all ../MyApp/Mappers MyApp.Data.Mappers
+mybatis-gen generate-all ./MyApp/Mappers MyApp.Data.Mappers
+dotnet build
 ```
 
 ### 2. Pre-commit Hook
@@ -179,32 +231,63 @@ Create `.git/hooks/pre-commit`:
 
 ```bash
 #!/bin/sh
-cd Tools
-dotnet run generate-all ../MyApp/Mappers
-git add ../MyApp/Mappers/*.cs
+# Auto-generate interfaces before commit
+mybatis-gen generate-all ./Mappers
+git add ./Mappers/*.cs
 ```
 
-### 3. Watch Mode (Future)
+Make it executable:
 
 ```bash
-# Auto-generate when XML changes (not implemented yet)
-dotnet watch run generate-all Mappers
+chmod +x .git/hooks/pre-commit
+```
+
+### 3. Local Development Workflow
+
+Add npm scripts or make commands for convenience:
+
+**package.json** (if using npm):
+
+```json
+{
+  "scripts": {
+    "gen": "mybatis-gen generate-all Mappers",
+    "build": "npm run gen && dotnet build"
+  }
+}
+```
+
+**Makefile**:
+
+```makefile
+.PHONY: gen build
+
+gen:
+	mybatis-gen generate-all Mappers
+
+build: gen
+	dotnet build
 ```
 
 ## ⚠️ Limitations
 
-1. **Type inference không 100% chính xác** - Review generated code
-2. **Complex types** - Chỉ detect basic types (int, string, DateTime, etc.)
-3. **Custom collections** - Mặc định `List<string>`, có thể cần adjust
-4. **Method overloading** - Không support (XML không support)
+1. **Type inference is not 100% accurate** - Always review generated code
+2. **Complex types** - Only detects basic types (int, string, DateTime, etc.)
+3. **Custom collections** - Defaults to `List<T>`, may need manual adjustment
+4. **Method overloading** - Not supported (XML doesn't support it either)
+5. **Generic types** - Limited support for complex generics
 
 ## 💡 Best Practices
 
-1. **Review generated code** trước khi sử dụng
-2. **Don't edit generated files manually** - Re-generate từ XML
-3. **Add to .gitignore** nếu muốn always generate fresh
-4. **Run trong CI/CD** để ensure sync
-5. **Use meaningful parameter names** trong XML để type inference chính xác hơn
+1. **Always review generated code** before using in production
+2. **Don't edit generated files manually** - Regenerate from XML instead
+3. **Version control strategy**:
+   - **Option A**: Commit generated `.cs` files (easier for team)
+   - **Option B**: Add to `.gitignore` and generate in CI/CD (ensures fresh)
+4. **Run in CI/CD** to ensure interface/XML sync before build
+5. **Use meaningful parameter names** in XML for better type inference
+6. **Keep XML as source of truth** - Update XML, then regenerate interface
+7. **Add XML validation** to catch errors early (missing `returnSingle`, etc.)
 
 ## 📚 Examples
 
@@ -214,8 +297,12 @@ dotnet watch run generate-all Mappers
 
 ```xml
 <mapper namespace="IProductMapper">
-  <select id="GetAll" resultType="Product">
+  <select id="GetAll" resultType="Product" returnSingle="false">
     SELECT * FROM Products
+  </select>
+
+  <select id="GetById" resultType="Product" returnSingle="true">
+    SELECT * FROM Products WHERE Id = @id
   </select>
 
   <insert id="Insert" parameterType="Product">
@@ -230,6 +317,7 @@ dotnet watch run generate-all Mappers
 public interface IProductMapper
 {
     List<Product> GetAll();
+    Product? GetById(int id);
     int Insert(Product product);
 }
 ```
@@ -240,7 +328,7 @@ public interface IProductMapper
 
 ```xml
 <mapper namespace="IOrderMapper">
-  <select id="Search" resultType="Order">
+  <select id="Search" resultType="Order" returnSingle="false">
     SELECT * FROM Orders
     <where>
       <if test="customerId != null">
@@ -272,7 +360,7 @@ public interface IOrderMapper
 
 ```xml
 <mapper namespace="ICategoryMapper">
-  <select id="FindByIds" resultType="Category">
+  <select id="FindByIds" resultType="Category" returnSingle="false">
     SELECT * FROM Categories
     WHERE Id IN
     <foreach collection="ids" item="id" open="(" separator="," close=")">
@@ -287,18 +375,66 @@ public interface IOrderMapper
 ```csharp
 public interface ICategoryMapper
 {
-    List<Category> FindByIds(List<string> ids);
+    List<Category> FindByIds(List<int> ids);
 }
+```
+
+> **Note**: Tool detects `ids` collection and generates `List<int>` based on `id` name inference.
+
+## 🔍 Troubleshooting
+
+### "command not found: mybatis-gen"
+
+**Solution**: Make sure the tool is installed and `~/.dotnet/tools` is in your PATH.
+
+```bash
+# Check if tool is installed
+dotnet tool list -g
+
+# Add to PATH (Linux/Mac - add to ~/.bashrc or ~/.zshrc)
+export PATH="$PATH:$HOME/.dotnet/tools"
+
+# Windows - add to PATH environment variable
+%USERPROFILE%\.dotnet\tools
+```
+
+### "Invalid XML mapper file"
+
+**Solution**: Ensure your XML has:
+
+- Valid XML structure
+- `<mapper namespace="...">` root element
+- `returnSingle` attribute on all `<select>` statements (v2.0.0+)
+
+### "Type inference incorrect"
+
+**Solution**: The tool uses heuristics. Review and manually adjust types if needed:
+
+```csharp
+// Generated (may need adjustment)
+int? customerId
+
+// Adjust if needed
+Guid? customerId
 ```
 
 ## 🤝 Contributing
 
 Found a bug? Have a suggestion?
 
-- Open an issue
-- Submit a PR
-- Contact: hammond01
+- **GitHub**: [https://github.com/hammond01/MyBatis.NET](https://github.com/hammond01/MyBatis.NET)
+- **Issues**: [Report bugs or request features](https://github.com/hammond01/MyBatis.NET/issues)
+- **Pull Requests**: Contributions welcome!
 
 ## 📄 License
 
 MIT License - Same as MyBatis.NET
+
+---
+
+**Related Documentation:**
+
+- [MyBatis.NET Main README](../README.md)
+- [Usage Guide](../USAGE_GUIDE.md)
+- [Quick Reference](../QUICK_REFERENCE.md)
+- [SQL Logging](../SQL_LOGGING.md)

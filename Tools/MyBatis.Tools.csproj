@@ -6,11 +6,27 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>mybatis-gen</AssemblyName>
-    <RootNamespace>MyBatis.NET.Tools</RootNamespace>
+    <RootNamespace>MyBatis.NET.SqlMapper.Tool</RootNamespace>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>mybatis-gen</ToolCommandName>
+    <PackageId>MyBatis.NET.SqlMapper.Tool</PackageId>
+    <Version>2.0.1</Version>
+    <Authors>Hammond</Authors>
+    <Description>MyBatis.NET code generator tool for generating C# interfaces from XML mappers. Supports returnSingle attribute, smart type inference, and parameter auto-detection.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/hammond01/MyBatis.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hammond01/MyBatis.NET</RepositoryUrl>
+    <PackageTags>mybatis;code-generator;xml-mapper;dotnet-tool;cli</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>v2.0.1: Added comprehensive README documentation with installation, usage examples, troubleshooting, and best practices.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyBatis.NET.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
