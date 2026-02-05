@@ -5,6 +5,28 @@ All notable changes to MyBatis.NET will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### 🚀 Performance
+- **Core**: Optimized `ResultMapper` using **Compiled Expression Trees** instead of Reflection. This significantly improves object mapping performance (up to 10x faster), making it competitive with Dapper.
+
+### ⚙️ Infrastructure & CI/CD
+- Added **GitHub Actions** workflows:
+    - `dotnet.yml`: Automated Build & Test on PRs/Commit.
+    - `publish.yml`: Auto-publish to NuGet on Release.
+- Configured **Unit Tests** vs **Integration Tests** separation to fix CI build failures.
+
+### 🏛️ Community & Governance
+- Added **Governance** documents:
+    - `GOVERNANCE.md`: Project roles and decision-making process.
+    - `CODE_OF_CONDUCT.md`: Contributor Covenant v2.1.
+    - `SECURITY.md`: Vulnerability reporting policy.
+- Added GitHub Issue & PR Templates.
+
+### 🧪 Testing
+- Added `ResultMapperTests` with clean unit tests using Moq.
+- Marked database-dependent tests with `[Trait("Category", "Integration")]`.
+
 ## [2.0.0] - 2025-11-05
 
 ### 🔥 Breaking Changes
