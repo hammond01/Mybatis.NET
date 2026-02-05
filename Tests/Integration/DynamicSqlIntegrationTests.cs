@@ -10,6 +10,7 @@ namespace MyBatis.NET.Tests.Integration;
 /// Integration tests simulating real user scenarios with Dynamic SQL
 /// Prerequisites: Run TestDatabase.sql to create test database
 /// </summary>
+[Trait("Category", "Integration")]
 public class DynamicSqlIntegrationTests : IDisposable
 {
     private readonly SqlSession _session;
