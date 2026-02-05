@@ -7,6 +7,7 @@ namespace MyBatis.NET.Tests.Examples;
 /// <summary>
 /// Tests demonstrating SQL logging configuration
 /// </summary>
+[Trait("Category", "Integration")]
 public class SqlLoggingTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
