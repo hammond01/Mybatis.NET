@@ -15,7 +15,7 @@ public static class MapperRegistry
     public static SqlStatement Get(string id)
     {
         if (!_map.TryGetValue(id, out var stmt))
-            throw new InvalidOperationException($"Mapper id '{id}' not found");
+            throw new InvalidOperationException($"SQL Statement with ID '{id}' not found. Ensure the XML Mapper file is loaded and the namespace.id matches.");
         return stmt;
     }
 }

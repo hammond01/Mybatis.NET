@@ -1,0 +1,45 @@
+name: 🧪 Build & Test
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    name: 🔨 Build & Test
+    runs-on: windows-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: ⚙️ Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: 📦 Restore dependencies
+      run: dotnet restore
+
+    - name: 🔨 Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: 🧪 Run Tests
+      run: dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --filter "Category!=Integration"
+      
+    # Optional: Upload coverage data if you integrate with Codecov later
+    # - name: 📊 Upload coverage
+    #   uses: codecov/codecov-action@v3

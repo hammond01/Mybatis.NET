@@ -1,0 +1,27 @@
+name: 🚀 Publish to NuGet
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    name: 📦 Publish NuGet Package
+    runs-on: windows-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: ⚙️ Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+        
+    - name: 🔨 Build & Pack
+      run: dotnet pack MyBatis.NET.csproj --configuration Release --output nuget-packages
+      
+    - name: 🚀 Publish to NuGet
+      run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}

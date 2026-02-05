@@ -43,6 +43,10 @@ public class SqlSession : IDisposable
             using var reader = cmd.ExecuteReader();
             return ResultMapper.MapToList<T>(reader);
         }
+        catch (SqlException ex) when (ex.Message.Contains("Must declare the scalar variable"))
+        {
+             throw new MyBatisException($"Error executing '{id}': Missing parameter. {ex.Message}", ex);
+        }
         catch (Exception ex)
         {
             throw new MyBatisException($"Error executing select statement '{id}': {ex.Message}", ex);
@@ -65,6 +69,10 @@ public class SqlSession : IDisposable
             cmd.CommandTimeout = _commandTimeout;
             AddParams(cmd, modifiedParams);
             return cmd.ExecuteNonQuery();
+        }
+        catch (SqlException ex) when (ex.Message.Contains("Must declare the scalar variable"))
+        {
+             throw new MyBatisException($"Error executing '{id}': Missing parameter. {ex.Message}", ex);
         }
         catch (Exception ex)
         {
@@ -154,6 +162,10 @@ public class SqlSession : IDisposable
             await using var reader = await cmd.ExecuteReaderAsync();
             return ResultMapper.MapToList<T>(reader);
         }
+        catch (SqlException ex) when (ex.Message.Contains("Must declare the scalar variable"))
+        {
+             throw new MyBatisException($"Error executing async select '{id}': Missing parameter. {ex.Message}", ex);
+        }
         catch (Exception ex)
         {
             throw new MyBatisException($"Error executing async select statement '{id}': {ex.Message}", ex);
@@ -176,6 +188,10 @@ public class SqlSession : IDisposable
             cmd.CommandTimeout = _commandTimeout;
             AddParams(cmd, modifiedParams);
             return await cmd.ExecuteNonQueryAsync();
+        }
+        catch (SqlException ex) when (ex.Message.Contains("Must declare the scalar variable"))
+        {
+             throw new MyBatisException($"Error executing async statement '{id}': Missing parameter. {ex.Message}", ex);
         }
         catch (Exception ex)
         {

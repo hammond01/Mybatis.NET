@@ -66,6 +66,51 @@ switch (command)
         Console.WriteLine($"✅ Generated {xmlFiles.Length} interface(s)");
         break;
 
+    case "watch":
+        var watchDir = args.Length > 1 ? args[1] : "Mappers";
+        var watchNs = args.Length > 2 ? args[2] : null;
+
+        if (!Directory.Exists(watchDir))
+        {
+            Console.WriteLine($"❌ Error: Directory not found: {watchDir}");
+            return;
+        }
+
+        Console.WriteLine($"👀 Watching for changes in {watchDir}...");
+        Console.WriteLine("Press 'q' or Ctrl+C to stop.");
+
+        using (var watcher = new FileSystemWatcher(watchDir))
+        {
+            watcher.Filter = "*Mapper.xml";
+            watcher.IncludeSubdirectories = true;
+
+            watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime;
+
+            FileSystemEventHandler onChange = (sender, e) =>
+            {
+                // Simple debounce
+                Thread.Sleep(100); 
+                try
+                {
+                    Console.WriteLine($"\n📝 Detected change in {e.Name} ({e.ChangeType})");
+                    MapperInterfaceGenerator.GenerateAndSave(e.FullPath, null, watchNs);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Error: {ex.Message}");
+                }
+            };
+
+            watcher.Changed += onChange;
+            watcher.Created += onChange;
+            watcher.Renamed += (sender, e) => onChange(sender, new FileSystemEventArgs(WatcherChangeTypes.Renamed, Path.GetDirectoryName(e.FullPath)!, e.Name));
+
+            watcher.EnableRaisingEvents = true;
+
+            while (Console.Read() != 'q') ;
+        }
+        break;
+
     case "help":
     case "-h":
     case "--help":
