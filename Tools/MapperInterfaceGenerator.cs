@@ -24,6 +24,17 @@ public class MapperInterfaceGenerator
             .Where(e => e.Name.LocalName is "select" or "insert" or "update" or "delete")
             .ToList();
 
+        // Validate IDs
+        var duplicateIds = statements.GroupBy(s => s.Attribute("id")?.Value)
+            .Where(g => g.Count() > 1 && g.Key != null)
+            .Select(g => g.Key)
+            .ToList();
+
+        if (duplicateIds.Any())
+        {
+            throw new InvalidOperationException($"Duplicate statement IDs found in {Path.GetFileName(xmlFilePath)}: {string.Join(", ", duplicateIds)}");
+        }
+
         var sb = new StringBuilder();
 
         // Using statements
