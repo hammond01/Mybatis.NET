@@ -21,8 +21,11 @@ jobs:
     - name: 📦 Restore dependencies
       run: dotnet restore
 
-    - name: 🔨 Build & Pack
-      run: dotnet pack MyBatis.NET.csproj --configuration Release --no-restore --output nuget-packages
+    - name: 🔨 Build
+      run: dotnet build MyBatis.NET.csproj --configuration Release --no-restore
+
+    - name: 📦 Pack
+      run: dotnet pack MyBatis.NET.csproj --configuration Release --no-build --output nuget-packages
       
     - name: 🚀 Publish to NuGet
       run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
