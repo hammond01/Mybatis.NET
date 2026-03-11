@@ -1,7 +1,7 @@
 # MyBatis.NET
 
-[![NuGet Version](https://img.shields.io/nuget/v/MyBatis.NET.SqlMapper.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/MyBatis.NET.SqlMapper.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlMapper/)
+[![NuGet Version](https://img.shields.io/nuget/v/MyBatis.NET.SqlServer.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlServer)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/MyBatis.NET.SqlServer.svg)](https://www.nuget.org/packages/MyBatis.NET.SqlServer/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A lightweight MyBatis port for .NET, providing XML-based SQL mapping, runtime proxy generation, and transaction support.
@@ -18,26 +18,28 @@ A lightweight MyBatis port for .NET, providing XML-based SQL mapping, runtime pr
 - **XML Mappers**: Define SQL statements in XML files with mandatory `returnSingle` attribute
 - **Dynamic SQL**: Support for `<if>`, `<where>`, `<set>`, `<choose>`, `<foreach>`, `<trim>` tags (like MyBatis Java)
 - **Runtime Proxy**: Automatically generate mapper implementations using dynamic proxies
+- **Optimized Performance**: Compiled Expression Trees with smart caching (2-3x faster for repeated queries)
 - **Code Generator**: Auto-generate C# interfaces from XML mappers (keeps them in sync!)
 - **SQL Logging**: Built-in SQL query and parameter logging for debugging
 - **Transaction Support**: Built-in transaction management
-- **Result Mapping**: Automatic mapping of query results to .NET objects
+- **Result Mapping**: Automatic mapping of query results to .NET objects with optimized caching
 - **ADO.NET Integration**: Uses Microsoft.Data.SqlClient for database connectivity
 - **Async Support**: Full asynchronous operations for all database interactions
 - **DDD Support**: Load mappers from multiple libraries and embedded resources
+
 
 ## Installation
 
 Install via NuGet:
 
 ```bash
-dotnet add package MyBatis.NET.SqlMapper
+dotnet add package MyBatis.NET.SqlServer
 ```
 
 Or using Package Manager:
 
 ```powershell
-Install-Package MyBatis.NET.SqlMapper
+Install-Package MyBatis.NET.SqlServer
 ```
 
 ## 📖 Demo Project
@@ -48,7 +50,7 @@ A complete working demo is included in this repository at **[Demo/MyBatis.TestAp
 
 - ✅ **Dynamic SQL** - Full showcase of `<if>`, `<where>`, `<foreach>`, `<choose>`, `<set>`, and nested conditions
 - ✅ **Code Generator Tool** - How to use `mybatis-gen` to auto-generate interfaces
-- ✅ **returnSingle attribute** - Proper usage in v2.0.0
+- ✅ **returnSingle attribute** - Proper usage in v1.0.0
 - ✅ **Basic CRUD** - Users table with simple operations
 - ✅ **Complex Queries** - Products table with multi-filter search, category filtering, and dynamic updates
 - ✅ **DDD Architecture** - Domain, Application, Infrastructure, and Presentation layers
@@ -121,7 +123,7 @@ Create a file `UserMapper.xml` in the `Mappers` directory:
 </mapper>
 ```
 
-> **⚠️ Important (v2.0.0+)**: All `<select>` statements **must** have `returnSingle` attribute:
+> **⚠️ Important (v1.0.0+)**: All `<select>` statements **must** have `returnSingle` attribute:
 >
 > - `returnSingle="true"` for single object queries (returns `T?`)
 > - `returnSingle="false"` for collection queries (returns `List<T>`)
@@ -481,70 +483,23 @@ MIT License - see LICENSE file for details.
 
 ## Version History
 
-### Version 2.0.0 (Latest)
+### Version 1.0.0-preview.1 (Current Preview)
 
-**Major Release** - Breaking Changes & New Features
+- First public preview for the `MyBatis.NET.SqlServer` package line
+- Core runtime and documentation aligned for roadmap-driven releases
+- Release quality gate validated (build, unit tests, package generation)
 
-**🔥 Breaking Changes:**
+### Version 1.0.0 (Planned Stable)
 
-- **REQUIRED `returnSingle` attribute**: All `<select>` statements must now explicitly declare `returnSingle="true"` (single object) or `returnSingle="false"` (list)
-- This ensures clear distinction between queries that return single objects vs collections
-- Migration: Add `returnSingle` attribute to all existing `<select>` statements
+Initial release line for the SQL Server package `MyBatis.NET.SqlServer`.
 
-**✨ New Features:**
-
-- **Code Generator Tool**: Auto-generate C# interfaces from XML mappers
-  - Keeps interface and XML in perfect sync
-  - Smart parameter detection from SQL
-  - Type inference (id→int, name→string?, etc.)
-  - Commands: `generate` (single file), `generate-all` (batch)
-- **SQL Logging**: Built-in logging with `SqlSessionConfiguration`
-  - `EnableSqlLogging`: Log generated SQL queries
-  - `EnableParameterLogging`: Log parameter values
-  - Formatted console output for debugging
-- **Enhanced Documentation**:
-  - Complete usage guide (USAGE_GUIDE.md)
-  - Quick reference cheat sheet (QUICK_REFERENCE.md)
-  - SQL logging guide (SQL_LOGGING.md)
-  - Code generator documentation (Tools/README.md)
-
-**🚀 Improvements:**
-
-- **Dynamic SQL Support**: Full implementation of `<if>`, `<where>`, `<set>`, `<choose>/<when>/<otherwise>`, `<foreach>`, and `<trim>` tags
-- **Expression Evaluator**: OGNL-like expression evaluation for conditional SQL
-- **Smart SQL Building**: Automatic WHERE/SET clause management with proper prefix/suffix handling
-- Feature parity with MyBatis Java for dynamic SQL capabilities
-- Comprehensive test suite with 14 test cases covering all features
-
-**📝 Migration Guide:**
-
-```xml
-<!-- OLD (v1.x) -->
-<select id="GetAll" resultType="User">
-  SELECT * FROM Users
-</select>
-
-<!-- NEW (v2.0) - Add returnSingle attribute -->
-<select id="GetAll" resultType="User" returnSingle="false">
-  SELECT * FROM Users
-</select>
-
-<select id="GetById" resultType="User" returnSingle="true">
-  SELECT * FROM Users WHERE Id = @id
-</select>
-```
-
-### Version 1.6.0
-
-- Dynamic SQL Support: `<if>`, `<where>`, `<set>`, `<choose>`, `<foreach>`, `<trim>` tags
-- Expression Evaluator for conditional SQL
-- Smart SQL Building with automatic clause management
-
-### Version 1.5.0
-
-- Cleaned package by removing demo files from compilation
-- Added full async support for all database operations
-- Enhanced documentation with complete CRUD examples
+- XML-based mappers with mandatory `returnSingle` on `<select>`
+- Dynamic SQL tags: `<if>`, `<where>`, `<set>`, `<choose>`, `<foreach>`, `<trim>`
+- Runtime mapper proxy and session-based execution
+- Sync and async CRUD operations
+- SQL logging via `SqlSessionConfiguration`
+- Interface generator tool (`mybatis-gen`)
+- Result mapping with compiled expression trees and cache statistics APIs
 
 ## Author
 

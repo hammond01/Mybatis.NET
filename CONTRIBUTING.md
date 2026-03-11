@@ -39,7 +39,7 @@ When creating a bug report, include:
 **Bug**: Dynamic SQL `<if>` tag not evaluating null check correctly
 
 **Environment:**
-- MyBatis.NET version: 2.0.0
+- MyBatis.NET version: 1.0.0
 - .NET version: 8.0
 - Database: SQL Server 2022
 
@@ -74,6 +74,46 @@ Unsure where to begin? Look for issues labeled:
 
 ## 🛠️ Development Setup
 
+## 🌿 Branching Strategy (GitHub Flow)
+
+This repository currently uses **GitHub Flow** (no `develop` branch yet):
+
+- `main` is the single stable branch
+- Create short-lived branches from `main` for each change
+- Open a PR back to `main` after CI passes
+
+Branch naming convention:
+
+```text
+<type>/<scope>-<short-description>
+```
+
+Recommended `type` values:
+
+- `feature`
+- `fix`
+- `refactor`
+- `chore`
+- `docs`
+- `test`
+- `hotfix`
+
+Recommended `scope` values:
+
+- `platform`
+- `infra`
+- `gateway`
+- `product`
+- `category`
+- `audit`
+- `saga`
+
+Examples:
+
+- `feature/platform-add-postgres-provider`
+- `fix/infra-null-connection-check`
+- `docs/platform-update-release-guide`
+
 ### Prerequisites
 
 - .NET 8.0 SDK or later
@@ -91,12 +131,12 @@ Unsure where to begin? Look for issues labeled:
    cd MyBatis.NET
    ```
 
-2. **Create a branch**
+2. **Create a branch from `main`**
 
    ```bash
+   git checkout main
+   git pull --ff-only
    git checkout -b feature/your-feature-name
-   # or
-   git checkout -b fix/your-bug-fix
    ```
 
 3. **Restore dependencies**

@@ -4,13 +4,13 @@
 
 MyBatis.NET provides built-in SQL logging functionality to help you debug and monitor database queries. You can enable/disable SQL logging and parameter logging independently.
 
-**Package Name**: `MyBatis.NET.SqlMapper`  
+**Package Name**: `MyBatis.NET.SqlServer`  
 **Namespaces**: `MyBatis.NET.Core`, `MyBatis.NET.Mapper`
 
 ## 📦 Installation
 
 ```bash
-dotnet add package MyBatis.NET.SqlMapper
+dotnet add package MyBatis.NET.SqlServer
 ```
 
 ## 🚀 Quick Start

@@ -9,16 +9,16 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 
-    <PackageId>MyBatis.NET.SqlMapper</PackageId>
-    <Version>2.1.0-preview1</Version>
+    <PackageId>MyBatis.NET.SqlServer</PackageId>
+    <Version>1.0.0-preview.1</Version>
     <Authors>Hammond</Authors>
-    <Description>Lightweight MyBatis port for .NET with code generation tool. XML mappers with mandatory returnSingle attribute, dynamic SQL (&lt;if&gt;, &lt;where&gt;, &lt;foreach&gt;, &lt;choose&gt;, etc.), auto-generate C# interfaces from XML, SQL logging, runtime proxy, transaction support, async operations, and multi-library DDD support.</Description>
+    <Description>Lightweight MyBatis port for .NET (SQL Server provider). XML mappers with mandatory returnSingle attribute, dynamic SQL (&lt;if&gt;, &lt;where&gt;, &lt;foreach&gt;, &lt;choose&gt;, etc.), auto-generate C# interfaces from XML, SQL logging, runtime proxy, transaction support, async operations, and multi-library DDD support.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hammond01/MyBatis.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/hammond01/MyBatis.NET</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>mybatis;orm;sql-mapper;dynamic-sql;xml-mapper;code-generator;database;ado-net;mapper-proxy;sql-logging</PackageTags>
-    <PackageReleaseNotes>Preview 2.1.0: Huge performance boost with Compiled Expression Trees (10x faster ResultMapper). CI/CD workflows added.</PackageReleaseNotes>
+    <PackageReleaseNotes>Initial preview release for MyBatis.NET.SqlServer with dynamic SQL, mapper proxy, SQL logging, and XML mapper support.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 

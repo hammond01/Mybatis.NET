@@ -26,7 +26,7 @@ If applicable, add screenshots or code snippets to help explain your problem.
  - OS: [e.g. Windows, Linux]
  - Framework: [e.g. .NET 8.0]
  - Database: [e.g. SQL Server 2022]
- - MyBatis.NET Version [e.g. 2.0.0]
+ - MyBatis.NET Version [e.g. 1.0.0]
 
 **Additional context**
 Add any other context about the problem here.
