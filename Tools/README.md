@@ -184,7 +184,7 @@ Smart type guessing based on parameter names:
 
 ### 3. **Return Type Detection**
 
-Based on `returnSingle` attribute (v2.0.0+):
+Based on `returnSingle` attribute (v1.0.0+):
 
 - `<select returnSingle="false">` → `List<T>` (T from `resultType`)
 - `<select returnSingle="true">` → `T?` (nullable single object)
@@ -404,7 +404,7 @@ export PATH="$PATH:$HOME/.dotnet/tools"
 
 - Valid XML structure
 - `<mapper namespace="...">` root element
-- `returnSingle` attribute on all `<select>` statements (v2.0.0+)
+- `returnSingle` attribute on all `<select>` statements (v1.0.0+)
 
 ### "Type inference incorrect"
 

@@ -24,12 +24,15 @@ jobs:
     - name: 🔨 Build
       run: dotnet build MyBatis.NET.csproj --configuration Release --no-restore
 
+    - name: 🧪 Run Tests
+      run: dotnet test Tests/MyBatis.NET.Tests.csproj --configuration Release --no-build --verbosity normal --filter "Category!=Integration"
+
     - name: 📦 Pack
       run: dotnet pack MyBatis.NET.csproj --configuration Release --no-build --output nuget-packages
       
     - name: 🚀 Publish to NuGet
       run: |
-        Get-ChildItem nuget-packages/*.nupkg | ForEach-Object {
+        Get-ChildItem nuget-packages/MyBatis.NET.SqlServer*.nupkg | ForEach-Object {
           dotnet nuget push $_.FullName --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
         }
       env:

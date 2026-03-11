@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
     paths-ignore:
-      - '**.md'
+      - '**/*.md'
       - 'docs/**'
   pull_request:
     branches: [ "main" ]
@@ -34,11 +34,14 @@ jobs:
     - name: 📦 Restore dependencies
       run: dotnet restore
 
-    - name: 🔨 Build
-      run: dotnet build --configuration Release --no-restore
+    - name: 🔨 Build Runtime
+      run: dotnet build MyBatis.NET.csproj --configuration Release --no-restore
+
+    - name: 🔨 Build Tests
+      run: dotnet build Tests/MyBatis.NET.Tests.csproj --configuration Release --no-restore
 
     - name: 🧪 Run Tests
-      run: dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --filter "Category!=Integration"
+      run: dotnet test Tests/MyBatis.NET.Tests.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --filter "Category!=Integration"
       
     # Optional: Upload coverage data if you integrate with Codecov later
     # - name: 📊 Upload coverage
